@@ -42,10 +42,11 @@
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
 
-export const sendMessage = async (req, res) => {
+export const sendMessage = async (req, res,) => {
   try {
     const { message } = req.body;
-    const { id: receiverId } = req.params;
+    const { id:receiverId } = req.params;
+    console.log(receiverId  , "Chandu");
 
     // Ensure user is authenticated
     if (!req.user) {
