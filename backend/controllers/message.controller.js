@@ -46,13 +46,15 @@ export const sendMessage = async (req, res,) => {
   try {
     const { message } = req.body;
     const { id:receiverId } = req.params;
+    const senderId = req.user._id;
+
     console.log(receiverId  , "Chandu");
 
     // Ensure user is authenticated
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized: User not logged in" });
     }
-    const senderId = req.user._id;
+
 
     // Find existing conversation or create a new one
     let conversation = await Conversation.findOne({
@@ -62,7 +64,7 @@ export const sendMessage = async (req, res,) => {
     if (!conversation) {
       conversation = await Conversation.create({
         participant: [senderId, receiverId],
-        message: [],
+        // message: [],
       });
     }
 
@@ -78,7 +80,7 @@ export const sendMessage = async (req, res,) => {
     await conversation.save();
 
     // Respond with success
-    res.status(201).json({ message: "Message sent successfully" });
+    res.status(201).json({ message:newMessage});
   } catch (error) {
     console.log("Error in sendMessage controller:", error.message);
     res.status(500).json({ error: "Internal server error" });
