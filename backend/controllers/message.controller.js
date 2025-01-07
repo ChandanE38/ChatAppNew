@@ -1,44 +1,3 @@
-// import Conversation from "../models/conversation.model.js";
-// import Message from "../models/message.model.js";
-
-// export const sendMessage = async (req,res) => {
-//   try{
-//     const {message}=req.body;
-//     const {id:reciverId } = req.params;
-//     // const {id} = req.params.id;
-//     const senderId= req.user._id;
-
-//      let conversation = await Conversation.findOne({
-//         participant:{$all: [senderId,receiverId] },
-//     });
-
-//     if(!conversation){
-//         conversation = await Conversation.create({
-//             participant:[senderId , receiverId],
-        
-//         });
-//     }
-
-//     const newMessage = new Message({
-//         senderId,
-//         receiverId,
-//         message,
-//     });
-
-//     if(newMessage){
-//         conversation.message.push(newMessage._id);
-//     }
-
-//     res.status(201).json({message:"Message sent successfully"});
-
-//   }catch{
-//     console.log("Error in send message controller:",error.message);
-//     res.status(500).json({error:"Internal server error"});
-
-//   }
-// };
-                                           
-
 import Conversation from "../models/conversation.model.js";
 import Message from "../models/message.model.js";
 
@@ -48,22 +7,19 @@ export const sendMessage = async (req, res,) => {
     const { id:receiverId } = req.params;
     const senderId = req.user._id;
 
-    console.log(receiverId  , "Chandu");
-
     // Ensure user is authenticated
     if (!req.user) {
       return res.status(401).json({ error: "Unauthorized: User not logged in" });
     }
 
-
     // Find existing conversation or create a new one
     let conversation = await Conversation.findOne({
-      participant: { $all: [senderId, receiverId] },
+      participants: { $all: [senderId, receiverId] },
     });
 
     if (!conversation) {
       conversation = await Conversation.create({
-        participant: [senderId, receiverId],
+        participants: [senderId, receiverId],
         // message: [],
       });
     }
@@ -76,13 +32,54 @@ export const sendMessage = async (req, res,) => {
     });
 
     // Push message ID to conversation
-    conversation.message.push(newMessage._id);
-    await conversation.save();
+    if(newMessage){
+      conversation.message.push(newMessage._id);
+    }
+    
+    //SOCKET IO Functionality will be added here;
+
+    //save conversation in the data base
+    // await conversation.save();
+    // await newMessage.save();
+
+    //Instead of doing one by one we do it like this bcz this saving message and conversation run parallel so this will save time;
+    await Promise.all([conversation.save(),newMessage.save()]);
 
     // Respond with success
-    res.status(201).json({ message:newMessage});
+    res.status(201).json({message:newMessage});
+
   } catch (error) {
     console.log("Error in sendMessage controller:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getMessage = async (req,res)=>{
+  try{
+
+    if (!req.user) {
+      return res.status(401).json({ error: "Unauthorized: User not logged in" });
+    }
+
+    const {id:userToChatId} = req.params;
+    console.log("We will get message here");
+    const senderId = req.user._id;
+
+    //By using the .populate() we added message into the conversation
+    const conversation = await Conversation.findOne({
+      participants:{$all:[senderId,userToChatId]},
+    }).populate("message");
+
+    if(!conversation) return res.status(200).json([]);
+
+    const message=conversation.message;
+
+    //console.log(conversation.message);
+
+    res.status(200).json(message);
+
+  } catch (error) {
+    console.log("Error in getMessage controller:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
