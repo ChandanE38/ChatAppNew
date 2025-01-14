@@ -1,19 +1,25 @@
 import React from 'react'
 
-const GenderCheckbox = () => {
+const GenderCheckbox = ({onCheckboxChange,selectedGender}) => {
   return (
     <div className='flex'>
         <div className='form-control'>
-            <label className={'label gap-1 cursor-pointer'}>
+            <label className={'label gap-1 cursor-pointer ${selectedGender === "male" ? "selected": ""}'}>
                 <span className='label-text text-white'>Male</span>
-                <input type='checkbox' className='checkbox border-yellow-100'/>
+                <input type='checkbox' className='checkbox border-yellow-100'
+                  checked={selectedGender === 'male'}
+                  onChange={()=> onCheckboxChange("male")}
+                />
             </label>
         </div>
 
         <div className='form-control'>
-            <label className={'label gap-1 cursor-pointer'}>
+            <label className={'label gap-1 cursor-pointer  ${selectedGender === "female" ? "selected": ""}'}>
                 <span className='label-text text-white'>Female</span>
-                <input type='checkbox' className='checkbox border-yellow-100'/>
+                <input type='checkbox' className='checkbox border-yellow-100'
+                    checked={selectedGender === "female"}
+                    onChange={()=>onCheckboxChange("female")}
+                />
             </label>
         </div>
         {/* <div className='form-control'>
@@ -62,4 +68,4 @@ export default GenderCheckbox;
 //   )
 // }
 
-// export default GenderCheckbox
+// export default GenderCheckbox;

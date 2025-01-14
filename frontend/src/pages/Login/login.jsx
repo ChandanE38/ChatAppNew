@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 
 // here label is build in className
@@ -33,9 +34,9 @@ const Login = () => {
                 <input type='text' placeholder='Enter Password here' className='w-full input input-borded h-10'/>
                 
             </div>
-            <a href='#' className='text-sm hover:underline hover:text-blue-600 mt-2 inline-block'>
+            <Link to='/signup' className='text-sm hover:underline hover:text-blue-600 mt-2 inline-block'>
               {"Don't"} have an account?
-            </a>
+            </Link>
             <button className='btn btn-block btn-sm mt-2'>Login</button>
            
           </form>

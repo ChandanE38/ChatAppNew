@@ -1,5 +1,6 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import cookieParser from "cookie-parser";
 
@@ -18,6 +19,9 @@ dotenv.config();
 app.use(express.json()); //to parse/extract the incoming request with JSON payloads (from req.body)
 
 app.use(cookieParser());
+
+// Allow all origins by using the default CORS configuration
+app.use(cors()); // This allows access from any origin
 
 
 //Middle layer
