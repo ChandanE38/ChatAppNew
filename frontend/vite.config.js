@@ -6,13 +6,13 @@ export default defineConfig({
   plugins: [react()],
 
   // // change the port number by this way accordingly
-  // server:{
-  //   port:8000,
+  server:{
+     port:8000,
   //   proxy:{
   //     "/api":{
   //       target:"http://localhost:5000",
   //       changeOrigin:true,
   //     },
   //   },
-  // },
+  },
 })

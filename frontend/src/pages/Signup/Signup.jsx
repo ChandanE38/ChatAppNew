@@ -8,10 +8,10 @@ import useSignup from '../../hooks/useSignup.js';
 
 const SignUp = () => {
    const [inputs,setInputs]= useState({
-      FullName:'',
-      Username:'',
-      Password:'',
-      ConfirmPassword:'',
+      fullName:'',
+      username:'',
+      password:'',
+      confirmPassword:'',
       gender:''
    });
 
@@ -37,7 +37,7 @@ const SignUp = () => {
        backdrop-filter backdrop-blur-lg bg-opicity-0'>
           <h1 className='text-3xl font-semibold text-center text-blue-500'>SignUp-
               <span className='text-blue-500'>
-                ChatApp
+                 ChatApp
               </span>
           </h1>
 
@@ -47,8 +47,8 @@ const SignUp = () => {
                           <span className='text-base label-text text-yellow-50'>FullName</span>
                     </label>
                     <input type='text' placeholder='Enter your name' className='w-full input input-borded h-10'
-                      value={inputs.FullName}
-                      onChange={(e)=>setInputs({...inputs , FullName:e.target.value})}
+                      value={inputs.fullName}
+                      onChange={(e)=>setInputs({...inputs , fullName:e.target.value})}
                     />
              </div>
 
@@ -57,8 +57,8 @@ const SignUp = () => {
                       <span className='text-base label-text text-yellow-50'>Username</span>
                  </label>
                  <input type='text' placeholder='Enter Username here' className='w-full input input-borded h-10'
-                    value={inputs.Username}
-                    onChange={(e)=>setInputs({...inputs , Username:e.target.value})}
+                    value={inputs.username}
+                    onChange={(e)=>setInputs({...inputs , username:e.target.value})}
                  />
               </div>
 
@@ -67,8 +67,8 @@ const SignUp = () => {
                       <span className='text-base label-text text-yellow-50'>Password</span>
                  </label>
                  <input type='text' placeholder='Enter Password here' className='w-full input input-borded h-10'
-                      value={inputs.Password}
-                      onChange={(e)=>setInputs({...inputs , Password:e.target.value})}
+                      value={inputs.password}
+                      onChange={(e)=>setInputs({...inputs , password:e.target.value})}
                  />
               </div>
 
@@ -77,8 +77,8 @@ const SignUp = () => {
                        <span className='text-base label-text text-yellow-50'>ConfirmPassword</span>
                   </label>
                   <input type='text' placeholder='Enter Confirm Password' className='w-full input input-borded h-10'
-                      value={inputs.ConfirmPassword}
-                      onChange={(e)=>setInputs({...inputs , ConfirmPassword:e.target.value})}
+                      value={inputs.confirmPassword}
+                      onChange={(e)=>setInputs({...inputs , confirmPassword:e.target.value})}
                   />
               </div>
 
