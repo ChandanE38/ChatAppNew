@@ -51,6 +51,12 @@ export default Login;
 
 
 
+// fullName:'',
+// username:'',
+// password:'',
+// confirmPassword:'',
+// gender:''
+
 
 // STARTER CODE OF THE LOGIN PAGE 
 
