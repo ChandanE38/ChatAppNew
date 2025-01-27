@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 
+// Hook() to fetch the conversation from the database.
 export const getUsersForSidebar = async (req,res) => {
     try{
 
