@@ -16,5 +16,5 @@
       
 
 export const getRandomEmoji = () => {
-    return funEmojis[Math.rendom(Math.random()*funEmojis.length)];
+    return funEmojis[Math.random(Math.random()*funEmojis.length)];
 };
