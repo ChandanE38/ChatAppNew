@@ -3,6 +3,7 @@ import Conversation from './conversation.jsx';
 import useGetConversations from '../../../hooks/useGetConversation.js';
 import { getRandomEmoji } from '../../../utils/emoji.js';
 
+
 const Conversations = () => {
   const {loading,conversations}=useGetConversations();
   console.log("CONVERSATIONS:",conversations);
@@ -16,7 +17,7 @@ const Conversations = () => {
            emoji={getRandomEmoji()}
 
           // We use this bcz at last conversation we does not have 
-           lastIdx={idx == conversation.length-1}
+           lastIdx={idx === conversation.length-1}
         
         />
       ))}

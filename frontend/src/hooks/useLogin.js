@@ -132,6 +132,7 @@ const useLogin = () => {
   const { setAuthUser } = useAuthContext();
 
   const login = async (username, password) => {
+    
     // Validate input fields
     const isValid = handleInputErrors({ username, password });
     if (!isValid) return;
