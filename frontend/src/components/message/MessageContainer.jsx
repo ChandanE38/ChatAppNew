@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Messages from './Messages.jsx'
 import MessageInput from './MessageInput.jsx'
 import {TiMessages} from "react-icons/ti"
@@ -8,6 +8,14 @@ import useConversation from '../../zustand/useConversation.js'
 const MessageContainer = () => {
   const {selectedConversation , setSelectedConversation} = useConversation();
   // const noChatSelected= false;
+
+  //This use effect is used for that not getting open of user message which we have ---
+  // selected previously and after login that should not shown;
+  useEffect(()=>{
+    // Clean-up function and then after login again there is null selected conversation
+    return () => setSelectedConversation(null);
+  },[setSelectedConversation]);
+
   return (
     <div className='md:min-w-[450px] flex flex-col w-1800px'>
         {!selectedConversation ? ( 
@@ -16,7 +24,7 @@ const MessageContainer = () => {
              <> 
              <div>  
                  <span className='label-text'></span>
-                 <span className='text-gray-900 font-bold'>Rohan It's Chandan</span>
+                 <span className='text-gray-900 font-bold'>{selectedConversation.fullName}</span>
              </div>
              <Messages />
              <MessageInput />

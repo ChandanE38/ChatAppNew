@@ -1,27 +1,92 @@
-import React from 'react'
+// import React from 'react';
+// import {useAuthContext} from '../../context/AuthContext.jsx';
+// import useConversation from '../../zustand/useConversation.js';
 
-const Message = () => {
-  return (
-    <div className='chat chat-end'>
-        <div className='chat-image avatar'>
-            <div className='w-10 rounded-full'>
-                <img
-                    alt='Tailwind CSS chat bubble component'
-                    src={
-                        "https://img.daisyui.com/images/stock/photo-1560717789-0ac7c58ac90a-blur.webp"
 
-                    }
-                />
-            </div>
-        </div>
+// const Message = ({message}) => {
+//    const {authUser} = useAuthContext();
+//    const {selectedConversation} =useConversation();
+//    const fromMe = message?.sender?._id === authUser?._id;
+//    console.log(message);
 
-        <div className={'chat-bubble text-white bg-blue-500'}>
-              Hi Whats up
-              <time className="text-xs opacity-50">12:45</time>
-        </div>
+//    // Its means if message is send by me then it will be in starting otherwise its in ending.
+//     const chatClassName = fromMe ? 'chat-end':'chat-start';
+
+//     //By writing ? we done optional chaining.
+//     //Show profile picture according to who have send that message.
+//     const profilePic = fromMe
+//         ? authUser.profilePic || "default-avatar.png" : selectedConversation?.profilePic;
+
+//     //Add background-colour of text.
+//     const bubbleBgColor = fromMe ? 'bg-blue-500' : "";
+
+
+//     //We use '$' for dynamic value If we are taking.
+//   return (
+//     <div className={`chat ${chatClassName}`}>
+//         <div className='chat-image avatar'>
+//             <div className='w-10 rounded-full'>
+//                 <img
+//                     alt='Tailwind CSS chat bubble component'
+//                     src={profilePic || "/default-avatar.png"}
+//                 />
+//             </div>
+//         </div>
+
+//         {console.log(message)}
+//          {/* we can't use single-upper-comma or double-upper-comma so thatswhy we have used  this `` one. */}
+//         <div className={`chat-bubble text-white bg-blue-500 ${bubbleBgColor }}`}>
+//               {message?.message?.message ? message.message: "No message content"}     
+//         </div>
+//         <time className="text-xs opacity-50">12:45</time>
        
-    </div>
-  )
-}
+//     </div>
+//   );
+// };
 
-export default Message
+// export default Message;
+
+
+import React from 'react';
+import { useAuthContext } from '../../context/AuthContext.jsx';
+import useConversation from '../../zustand/useConversation.js';
+
+const Message = ({ message }) => {
+   const { authUser } = useAuthContext();
+   const { selectedConversation } = useConversation();
+
+   const fromMe = message?.sender?._id === authUser?._id;
+   const chatClassName = fromMe ? 'chat-end' : 'chat-start';
+
+   const profilePic = fromMe
+       ? authUser.profilePic || "default-avatar.png"
+       : selectedConversation?.profilePic;
+
+   const bubbleBgColor = fromMe ? 'bg-blue-500' : '';
+
+   // Safely extract the message content (ensure it's a string)
+   const messageContent = typeof message?.message === 'string'
+       ? message.message
+       : JSON.stringify(message?.message.message) || "No message content";
+
+   return (
+     <div className={`chat ${chatClassName}`}>
+        <div className="chat-image avatar">
+           <div className="w-10 rounded-full">
+              <img
+                 alt="User Avatar"
+                 src={profilePic || "/default-avatar.png"}
+              />
+           </div>
+        </div>
+
+        <div className={`chat-bubble text-white ${bubbleBgColor}`}>
+           {messageContent}
+        </div>
+
+        <time className="text-xs opacity-50">{message?.createdAt}</time>
+     </div>
+   );
+};
+
+export default Message;

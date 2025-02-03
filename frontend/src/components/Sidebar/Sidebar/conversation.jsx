@@ -86,6 +86,7 @@ import useConversation from "../../../zustand/useConversation.js";
 
 const Conversation = ({ conversation, lastIdx, emoji }) => {
   const { selectedConversation, setSelectedConversation } = useConversation();
+
   const isSelected = selectedConversation && selectedConversation?._id === conversation._id;
 
 //   console.log("Selected-Conversation-Id:",selectedConversation._id);
@@ -95,6 +96,8 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
     <>
       <div
         className={`flex gap-2 items-center hover:bg-sky-500 rounded p-2 py-1 cursor-pointer 
+          
+            // If any one user is selected then its background colour will change otherwise not
             ${isSelected ? "bg-sky-500" : ""}
         `}
         onClick={() => setSelectedConversation(conversation)}
