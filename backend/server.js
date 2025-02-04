@@ -9,8 +9,10 @@ import messageRoutes from "./routes/message.routes.js";
 import userRoutes from "./routes/user.routes.js";
 
 import connectToMongoDB from './db/connectToMongoDB.js';
+import { app, server } from "./socket/socket.js";
 
-const app=express();
+// const app=express(); // We have commented or deleted this bcz we have created server in socket.js of backend ;
+
 const PORT = process.env.PORT || 5000;
 
 dotenv.config();
@@ -35,7 +37,15 @@ app.use("/api/users",userRoutes);
 //     res.send("Hello raj World");
 // });
 
-app.listen(PORT, ()=>{
+// app.listen(PORT, ()=>{
+//     connectToMongoDB();
+//     console.log(`Server Running on port ${PORT}`);
+
+// });
+
+
+
+server.listen(PORT, ()=>{
     connectToMongoDB();
     console.log(`Server Running on port ${PORT}`);
 
