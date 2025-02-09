@@ -32,7 +32,7 @@ const useGetMessages = () => {
             if(data.error) throw new Error(data.error);
 
             //Otherwise
-            setMessages("");
+            setMessages(data);
         }catch(error){
             toast.error(error.message);
         }finally{
