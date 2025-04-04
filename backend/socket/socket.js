@@ -1,39 +1,3 @@
-// import { Server } from 'socket.io';
-// import http from 'http';
-// import express from 'express';
-
-// const app = express(); // What is the use of this.
-
-// const server = http.createServer(app);
-// const io = new Server(server,{
-//     origin:["http://localhost:8000"],
-//     methods:["GET","POST"]
-// });
-
-// const userSocketMap = {}; // {userId,socketId}
-
-// io.on('connection',(socket)=>{
-//     console.log("a user connected",socket.id);
-
-//     const userId=socket.handshake.query.userId;
-    
-//     if(userId!="undefined") userSocketMap[userId]= socket._id;
-
-//     // io.emit() is used to send events to all connected clients  And It will immediately send this who is online and who is offline.
-//     io.emit("getOnlineUsers",Object.keys(userSocketMap));
-
-//     // socket.on() is used to listen to the events and can vbe used both on client and server side.
-//     socket.on("disconnect",()=>{
-//         console.log("user disconnected",socket.id);
-
-//         //When user disconnects. Then we do this
-//         delete userSocketMap[userId];
-
-//         io.emit("getOnlineUsers",Object.keys(userSocketMap));
-//     });
-// });
-
-// export {app,io,server};
 
 import { Server } from 'socket.io';
 import http from 'http';

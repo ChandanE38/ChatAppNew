@@ -1,0 +1,104 @@
+import { useState, useEffect } from "react";
+import React from "react";
+
+import {
+  BellIcon,
+  HomeIcon,
+  LogOutIcon,
+  MenuIcon,
+  MoonIcon,
+  SunIcon,
+  UserIcon,
+} from "lucide-react";
+import { Button } from "./ui/button"; // Ensure correct import
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { useUser, useClerk } from "@clerk/clerk-react"; // Corrected Clerk Auth
+import { Link } from "react-router-dom"; // React Router Link
+
+function MobileNavbar() {
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const { user } = useUser(); // Get logged-in user
+  const { signOut } = useClerk(); // Fix: Use `useClerk` for signOut
+
+  // Handle Theme Toggle (Without `next-themes`)
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  return (
+    <div className="flex md:hidden items-center space-x-2">
+      {/* Theme Toggle Button */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+        className="relative transition-all"
+        aria-label="Toggle Theme"
+      >
+        {theme === "dark" ? (
+          <SunIcon className="h-5 w-5 transition-transform duration-300 rotate-0 scale-100" />
+        ) : (
+          <MoonIcon className="h-5 w-5 transition-transform duration-300 rotate-180 scale-100" />
+        )}
+      </Button>
+
+      {/* Mobile Menu Button */}
+      <Sheet open={showMobileMenu} onOpenChange={setShowMobileMenu}>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" aria-label="Open Menu">
+            <MenuIcon className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="right" className="w-[300px]">
+          <SheetHeader>
+            <SheetTitle>Menu</SheetTitle>
+          </SheetHeader>
+          <nav className="flex flex-col space-y-4 mt-6">
+            <Link to="/" className="w-full">
+              <Button variant="ghost" className="flex items-center gap-3 justify-start w-full">
+                <HomeIcon className="w-4 h-4" />
+                Home
+              </Button>
+            </Link>
+
+            {user ? (
+              <>
+                <Link to="/notifications" className="w-full">
+                  <Button variant="ghost" className="flex items-center gap-3 justify-start w-full">
+                    <BellIcon className="w-4 h-4" />
+                    Notifications
+                  </Button>
+                </Link>
+
+                <Link to="/profile" className="w-full">
+                  <Button variant="ghost" className="flex items-center gap-3 justify-start w-full">
+                    <UserIcon className="w-4 h-4" />
+                    Profile
+                  </Button>
+                </Link>
+
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-3 justify-start w-full"
+                  onClick={() => signOut()}
+                >
+                  <LogOutIcon className="w-4 h-4" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link to="/sign-in" className="w-full">
+                <Button variant="default" className="w-full">Sign In</Button>
+              </Link>
+            )}
+          </nav>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+export default MobileNavbar;
