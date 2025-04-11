@@ -25,8 +25,10 @@ const useGetMessages = () => {
 
           
             );
+            
 
             const data = await res.json(); // Parse response
+            console.log(data);
 
             // If there is any error then throw that error.
             if(data.error) throw new Error(data.error);

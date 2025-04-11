@@ -9,6 +9,7 @@ export const LogInUser = async (req, res) => {
     try {
         console.log("Log in User started");
 
+        //It is used for destructring the request in individuality.
         const { username, password } = req.body;
 
         console.log(username);
@@ -21,16 +22,18 @@ export const LogInUser = async (req, res) => {
             return res.status(400).json({ error: "Username and password are required" });
         }
 
+        // User is a Mongoose model representing a MongoDB collection (e.g., "users").
+        // findOne({ username }) searches for a single document where the username field matches the provided value.
+        // await pauses execution until the query completes and returns the result.
         const user = await User.findOne({ username });
+
 
         if (!user) {
             return res.status(400).json({ error: "User is not present" });
         }
 
 
-
         // Check if password is correct
-
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
         if (!isPasswordCorrect) {
@@ -39,13 +42,18 @@ export const LogInUser = async (req, res) => {
 
 
         // Generate JWT Token
+        // jwt.sign(...): Creates the token.
+        // { userId: user._id }: The payload – what info you store inside the token.
+        // process.env.JWT_SECRET: The secret key used to sign the token so that it can't be tampered with.
+        // { expiresIn: '1000d' }: Token expiration time (1000 days in this case — pretty long).
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1000d' });
 
-        // Set Token in Cookie
+
+        // Set Token in Cookie bcz it Help the user stay logged in till that day which it set in generateTokenAndSetCookie() function.
+        // So that we dont need to login in again and again that why we set cookie.
         generateTokenAndSetCookie(user._id, token, res);
 
         // Send Response with Token
-
         res.status(200).json({
             _id: user._id,
             fullName: user.fullName,
@@ -148,6 +156,7 @@ export const SignInUser = async (req, res) => {
 
         // Generate auth token and set cookie
         generateTokenAndSetCookie(newUser._id, token, res);
+
 
         // Send success response
         res.status(201).json({
