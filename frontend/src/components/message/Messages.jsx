@@ -12,6 +12,7 @@ const Messages = () => {
 
   useEffect(() => {
     console.log('Messages updated:', messages); // Check messages state
+    
     setTimeout(() => {
       if (lastMessageRef.current) {
         lastMessageRef.current.scrollIntoView({ behavior: "smooth" });

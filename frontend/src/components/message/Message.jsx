@@ -1,4 +1,4 @@
-//This is the codde responsible for showing the message of any people.
+//This is the code responsible for showing the message of any people.
 
 import React from 'react';
 import { useAuthContext } from '../../context/AuthContext.jsx';
@@ -26,15 +26,14 @@ const Message = ({ message }) => {
    const receiverProfilePic = selectedConversation?.profilePic || defaultAvatarPic;
 
    // Use the correct profile picture based on the sender
-   const profilePic = fromMe ? authUser.profilePic || senderProfilePic : receiverProfilePic;
+   // Important : We have to first store the profile pic to get their.
+   const profilePic = fromMe ? senderProfilePic : receiverProfilePic;
+   // const profilePic = fromMe ?  receiverProfilePic : senderProfilePic
 
    // Determine message bubble background color
    const bubbleBgColor = fromMe ? 'bg-blue-500' : 'bg-gray-700';
 
    // Extract message content safely
-   // const messageContent = typeof message?.message === 'string' 
-   //     ? message.message 
-   //     : "No message content";
    const messageContent = message?.message?.message ?? message?.message ?? "No message content";
 
    // Apply shake animation if needed
@@ -65,7 +64,3 @@ const Message = ({ message }) => {
 };
 
 export default Message;
-
-
-
-
