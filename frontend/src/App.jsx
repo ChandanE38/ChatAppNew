@@ -6,6 +6,7 @@ import Login from './pages/Login/login.jsx';
 import SignUp from './pages/Signup/Signup.jsx';
 import { Toaster } from 'react-hot-toast';
 import { useAuthContext } from './context/AuthContext.jsx';
+import UserProfile from './components/Sidebar/Profile.jsx';
 
 function App() {
     const { authUser } = useAuthContext();
@@ -28,6 +29,10 @@ function App() {
                 
                 {/* Signup route: Redirect authenticated users to Home */}
                 <Route path="/signup" element={!authUser ? <SignUp /> : <Navigate to="/" />} />
+
+                {/* Profile route for any user */}
+                <Route path="/profile" element={authUser ? <UserProfile /> : <Navigate to="/login" />} />
+
                 
                 {/* Fallback route for undefined paths */}
                 <Route path="*" element={<Navigate to="/" />} />
