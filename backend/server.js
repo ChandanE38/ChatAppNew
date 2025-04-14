@@ -11,7 +11,7 @@ import userRoutes from "./routes/user.routes.js";
 import connectToMongoDB from './db/connectToMongoDB.js';
 import { app, server } from "./socket/socket.js";
 
-// const app=express(); // We have commented or deleted this bcz we have created server in socket.js of backend ;
+//const app=express(); // We have commented or deleted this bcz we have created server in socket.js of backend ;
 
 const PORT = process.env.PORT || 5000;
 
@@ -25,9 +25,6 @@ app.use(cookieParser());
 // Allow all origins by using the default CORS configuration
 app.use(cors()); // This allows access from any origin
 
-
-
-// const app = express();
 
 // Enable CORS for all origins (for development purposes)
 app.use(cors({
@@ -43,20 +40,9 @@ app.use("/api/users",userRoutes);
 
 
 
-// app.get("/",(req,res)=>{
-//     res.send("Hello raj World");
-// });
-
-// app.listen(PORT, ()=>{
-//     connectToMongoDB();
-//     console.log(`Server Running on port ${PORT}`);
-
-// });
-
-
-
 server.listen(PORT, ()=>{
     connectToMongoDB();
     console.log(`Server Running on port ${PORT}`);
 
 });
+

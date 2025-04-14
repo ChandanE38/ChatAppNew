@@ -1,6 +1,7 @@
+
 import { createContext, useState, useEffect, useContext } from "react";
 import { useAuthContext } from "./AuthContext";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
 
 const SocketContext = createContext();
 
@@ -14,28 +15,52 @@ export const SocketContextProvider = ({ children }) => {
 	const { authUser } = useAuthContext();
 
 	useEffect(() => {
+		let socketInstance;
+
 		if (authUser) {
-			const socket = io("https://chat-app-yt.onrender.com", {
+			socketInstance = io("http://localhost:5000/", {
+				path: "/socket.io",
 				query: {
 					userId: authUser._id,
 				},
+				transports: ["websocket"], // Use websocket only
+				withCredentials: true, // For cookie/session support if needed
 			});
 
-			setSocket(socket);
+			// ✅ Optional debug logs
+			socketInstance.on("connect", () => {
+				console.log("✅ Connected to socket server:", socketInstance.id);
+			});
 
-			// socket.on() is used to listen to the events. can be used both on client and server side
-			socket.on("getOnlineUsers", (users) => {
+			socketInstance.on("connect_error", (err) => {
+				console.error("❌ Socket connection error:", err.message);
+			});
+
+			socketInstance.on("disconnect", () => {
+				console.log("🔌 Socket disconnected");
+			});
+
+			socketInstance.on("getOnlineUsers", (users) => {
 				setOnlineUsers(users);
+				console.log("🟢 Online users:", users);
 			});
 
-			return () => socket.close();
-		} else {
-			if (socket) {
-				socket.close();
-				setSocket(null);
-			}
+			setSocket(socketInstance);
 		}
+
+		// Cleanup on unmount or authUser change
+		return () => {
+			if (socketInstance) {
+				socketInstance.disconnect();
+			}
+			setSocket(null);
+			setOnlineUsers([]);
+		};
 	}, [authUser]);
 
-	return <SocketContext.Provider value={{ socket, onlineUsers }}>{children}</SocketContext.Provider>;
+	return (
+		<SocketContext.Provider value={{ socket, onlineUsers }}>
+			{children}
+		</SocketContext.Provider>
+	);
 };
