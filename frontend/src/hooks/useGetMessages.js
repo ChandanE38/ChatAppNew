@@ -35,6 +35,8 @@ const useGetMessages = () => {
 
             //Otherwise
             setMessages(data);
+                    // Store only the message content
+            // setMessages(data.map(msg => msg.message)); // Only store message content
         }catch(error){
             toast.error(error.message);
         }finally{

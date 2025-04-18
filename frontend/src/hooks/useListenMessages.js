@@ -1,31 +1,57 @@
+// import { useEffect } from 'react';
+// import { useSocketContext } from '../context/SocketContext'
+// import useConversation from '../zustand/useConversation';
+
+// import notificationSound from "../assets/sounds/notification.mp3";
+
+// const useListenMessages = () => {
+//     // This useSocketContext returns "socket" 
+//     const { socket } = useSocketContext();
+//     const { messages, setMessages } = useConversation();
+
+//     useEffect(() => {
+//         socket?.on("newMessage", (newMessage) => {
+//             newMessage.shouldShake = true;
+
+//             // Add the sound of notification when a message comes.
+//             const sound = new Audio(notificationSound);
+//             sound.play();
+
+//             // Update messages array correctly by using the previous state
+//             setMessages((prevMessages) => [...prevMessages, newMessage]);
+//         });
+
+//         // Ensure socket is cleaned up after component unmounts
+//         return () => socket.off("newMessage");
+
+//     }, [socket, setMessages]);
+// };
+
+// export default useListenMessages;
 
 import { useEffect } from 'react';
-import { useSocketContext } from '../context/SocketContext'
+import { useSocketContext } from '../context/SocketContext';
 import useConversation from '../zustand/useConversation';
 
 import notificationSound from "../assets/sounds/notification.mp3";
 
 const useListenMessages = () => {
-    //This useSocketContext return "socket" 
-    const{socket} = useSocketContext();
+  const { socket } = useSocketContext();
+  const { messages, setMessages } = useConversation();
 
-    const {messages,setMessages}= useConversation();
+  useEffect(() => {
+    socket?.on("newMessage", (newMessage) => {
+      newMessage.shouldShake = true;
 
-    useEffect(()=>{
-      socket?.on("newMessage",(newMessage) => {
-         newMessage.shouldShake = true;
+      const sound = new Audio(notificationSound);
+      sound.play();
 
-         //Add the sound of notification when message came.
-         const sound = new Audio(notificationSound);
-         sound.play();
+      // Only add the message content
+      setMessages((prevMessages) => [...prevMessages, newMessage.message]); // Only store message content
+    });
 
-         setMessages([...messages,newMessage])
-      });
+    return () => socket.off("newMessage");
+  }, [socket, setMessages]);
+};
 
-      //this line is also important bcz you should not listen sound more than once if one message came.
-      return ()=>socket.off("newMessage")
-      
-    },[socket,setMessages,messages])
-}
-
-export default useListenMessages
+export default useListenMessages;
