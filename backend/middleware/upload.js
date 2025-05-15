@@ -1,3 +1,6 @@
+//For profile update middleware is used
+
+
 // middleware/upload.js
 import multer from "multer";
 import path from "path";
