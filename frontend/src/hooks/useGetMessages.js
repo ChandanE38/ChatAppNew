@@ -22,8 +22,6 @@ const useGetMessages = () => {
                     "Authorization": `Bearer ${token}`, // Attach token
                   },
                 }
-
-          
             );
             
 
