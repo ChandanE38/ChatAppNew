@@ -176,20 +176,25 @@ const useAuthStore = create(
 
       updateProfile: async ({ fullName, username, gender, profilePic }) => {
         try {
-          const formData = new FormData()
-          formData.append('fullName', fullName)
-          formData.append('username', username)
-          formData.append('gender', gender)
-          if (profilePic) formData.append('profilePic', profilePic)
+          const formData = new FormData();
+          formData.append('fullName', fullName);
+          formData.append('username', username);
+          formData.append('gender', gender);
+          if (profilePic) formData.append('profilePic', profilePic);
 
-          const res = await axios.put('localhost:5000/api/users/update', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          })
+          const token = localStorage.getItem("token");
 
-          set({ user: res.data }) // update user in store
-          return res.data
+          const res = await axios.put('http://localhost:5000/api/users/update', formData, {
+            headers: { 
+              'Content-Type': 'multipart/form-data',
+              "Authorization": `Bearer ${token}`
+            }
+          });
+
+          set({ user: res.data }); // update user in store
+          return res.data;
         } catch (err) {
-          throw err
+          throw err;
         }
       }
     }),

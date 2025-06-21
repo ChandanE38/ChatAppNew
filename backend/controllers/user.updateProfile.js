@@ -29,7 +29,7 @@ export const updateProfile = async (req, res) => {
 
         // If a file was uploaded, include the path
         if (req.file) {
-            updateData.profilePic = `/uploads/profile_pics/${req.file.filename}`;
+            updateData.profile = `/uploads/profile_pics/${req.file.filename}`;
         }
 
         const updatedUser = await User.findByIdAndUpdate(
@@ -42,7 +42,16 @@ export const updateProfile = async (req, res) => {
             return res.status(404).json({ error: "User not found" });
         }
 
-        res.status(200).json(updatedUser);
+        // Debug log
+        console.log('Updated user response:', updatedUser);
+
+        res.status(200).json({
+            _id: updatedUser._id,
+            fullName: updatedUser.fullName,
+            username: updatedUser.username,
+            gender: updatedUser.gender,
+            profile: updatedUser.profile || '', // Always include the profile picture URL
+        });
     } catch (error) {
         console.error("Error in updateProfile:", error.message);
         res.status(500).json({ error: "Internal server error" });

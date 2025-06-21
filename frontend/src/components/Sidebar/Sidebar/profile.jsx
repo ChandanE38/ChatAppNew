@@ -1,61 +1,83 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FiArrowLeft, FiUser, FiMail, FiInfo, FiSun, FiMoon } from 'react-icons/fi'
 import { motion } from 'framer-motion'
-import { useAuth } from '../../../hooks/useAuth.jsx'
 import { useTheme } from '../../../hooks/useTheme.jsx'
+import axios from 'axios'
 
 const UserProfile = () => {
-  const { user, updateProfile, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
 
-  const [name, setName] = useState(user?.name || '')
-  const [about, setAbout] = useState(user?.about || '')
+  // Always use chat-user from localStorage
+  const getChatUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem('chat-user')) || {};
+    } catch {
+      return {};
+    }
+  };
+
+  const [fullName, setFullName] = useState(getChatUser().fullName || '')
+  const [username, setUsername] = useState(getChatUser().username || '')
+  const [gender, setGender] = useState(getChatUser().gender || 'male')
+  const [profilePic, setProfilePic] = useState(null)
+  const [previewProfilePic, setPreviewProfilePic] = useState(getChatUser().profile || '')
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [avatarFile, setAvatarFile] = useState(null)
-  const [previewAvatar, setPreviewAvatar] = useState(user?.avatar || '')
   const [error, setError] = useState(null)
 
+  useEffect(() => {
+    const chatUser = getChatUser();
+    setFullName(chatUser.fullName || '');
+    setUsername(chatUser.username || '');
+    setGender(chatUser.gender || 'male');
+    setPreviewProfilePic(chatUser.profile || '');
+  }, []);
+
   const handleSaveProfile = async () => {
-    if (!name.trim()) return
-    setIsSaving(true)
-    setError(null)
+    if (!fullName.trim() || !username.trim() || !gender) return;
+    setIsSaving(true);
+    setError(null);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const formData = new FormData();
+      formData.append('fullName', fullName);
+      formData.append('username', username);
+      formData.append('gender', gender);
+      if (profilePic) formData.append('profilePic', profilePic);
 
-      // Prepare the data to update
-      const updatedData = {
-        name,
-        about,
-      }
+      const token = localStorage.getItem('token');
+      const res = await axios.put('http://localhost:5000/api/users/update', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
 
-      if (avatarFile) {
-        updatedData.avatarFile = avatarFile
-      }
-
-      await updateProfile(updatedData)
-      setIsEditing(false)
+      // Save the updated user data (including new profile image URL) to localStorage
+      localStorage.setItem('chat-user', JSON.stringify(res.data));
+      setIsEditing(false);
+      // Optionally update previewProfilePic immediately
+      setPreviewProfilePic(res.data.profile || '');
     } catch (error) {
-      setError('Failed to update profile. Please try again.')
-      console.error('Failed to update profile:', error)
+      setError('Failed to update profile. Please try again.');
+      console.error('Failed to update profile:', error);
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const handleLogout = () => {
-    logout()
+    localStorage.removeItem('chat-user')
     navigate('/login')
   }
 
-  const handleAvatarChange = (e) => {
+  const handleProfilePicChange = (e) => {
     const file = e.target.files[0]
     if (file) {
-      setAvatarFile(file)
-      setPreviewAvatar(URL.createObjectURL(file))
+      setProfilePic(file)
+      setPreviewProfilePic(URL.createObjectURL(file))
     }
   }
 
@@ -80,7 +102,7 @@ const UserProfile = () => {
           <div className="absolute -bottom-16 left-0 w-full text-center">
             <div className="mx-auto h-32 w-32 overflow-hidden rounded-full border-4 border-white bg-white shadow-md dark:border-gray-800">
               <img
-                src={previewAvatar}
+                src={previewProfilePic}
                 alt="Profile"
                 className="h-full w-full object-cover"
               />
@@ -110,14 +132,14 @@ const UserProfile = () => {
                 <div className="text-center">
                   <label className="relative mx-auto block h-32 w-32 cursor-pointer overflow-hidden rounded-full border-4 border-white bg-white shadow-md dark:border-gray-800">
                     <img
-                      src={previewAvatar}
+                      src={previewProfilePic}
                       alt="Preview"
                       className="h-full w-full object-cover"
                     />
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={handleAvatarChange}
+                      onChange={handleProfilePicChange}
                       className="absolute inset-0 opacity-0"
                     />
                   </label>
@@ -125,40 +147,61 @@ const UserProfile = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Name
+                  <label htmlFor="fullName" className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Full Name
                   </label>
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                       <FiUser className="text-gray-400" />
                     </div>
                     <input
-                      id="name"
+                      id="fullName"
                       type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
                       className="input pl-10"
-                      placeholder="Your name"
+                      placeholder="Your full name"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label htmlFor="about" className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    About
+                  <label htmlFor="username" className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Username
                   </label>
                   <div className="relative">
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <FiInfo className="text-gray-400" />
+                      <FiUser className="text-gray-400" />
                     </div>
                     <input
-                      id="about"
+                      id="username"
                       type="text"
-                      value={about}
-                      onChange={(e) => setAbout(e.target.value)}
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
                       className="input pl-10"
-                      placeholder="Tell us about yourself"
+                      placeholder="Your username"
                     />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="gender" className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    Gender
+                  </label>
+                  <div className="relative">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <FiUser className="text-gray-400" />
+                    </div>
+                    <select
+                      id="gender"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                      className="input pl-10"
+                    >
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
                   </div>
                 </div>
 
@@ -202,28 +245,28 @@ const UserProfile = () => {
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Name</p>
-                    <p className="text-gray-900 dark:text-white">{user?.name}</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Full Name</p>
+                    <p className="text-gray-900 dark:text-white">{getChatUser().fullName}</p>
                   </div>
                 </div>
 
                 <div className="flex items-center border-b border-gray-200 pb-4 dark:border-gray-700">
                   <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
-                    <FiMail size={20} />
+                    <FiUser size={20} />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
-                    <p className="text-gray-900 dark:text-white">{user?.email}</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Username</p>
+                    <p className="text-gray-900 dark:text-white">{getChatUser().username}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center pb-2">
+                <div className="flex items-center border-b border-gray-200 pb-4 dark:border-gray-700">
                   <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
-                    <FiInfo size={20} />
+                    <FiUser size={20} />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">About</p>
-                    <p className="text-gray-900 dark:text-white">{user?.about || 'No about information'}</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Gender</p>
+                    <p className="text-gray-900 dark:text-white">{getChatUser().gender}</p>
                   </div>
                 </div>
 
