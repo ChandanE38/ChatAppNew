@@ -58,7 +58,7 @@ export const LogInUser = async (req, res) => {
             _id: user._id,
             fullName: user.fullName,
             username: user.username,
-            profilePic: user.profilePic,
+            profilePic: user.profile,
             token,  // Including the token in response
         });
 

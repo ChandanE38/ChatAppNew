@@ -22,7 +22,12 @@ const UserProfile = () => {
   const [username, setUsername] = useState(getChatUser().username || '')
   const [gender, setGender] = useState(getChatUser().gender || 'male')
   const [profilePic, setProfilePic] = useState(null)
-  const [previewProfilePic, setPreviewProfilePic] = useState(getChatUser().profile || '')
+  // Fixed: Use profilePic instead of profile, and add base URL
+  const [previewProfilePic, setPreviewProfilePic] = useState(
+    getChatUser().profilePic 
+      ? `http://localhost:5000${getChatUser().profilePic}` 
+      : '/default-profile.png'
+  )
   const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState(null)
@@ -32,7 +37,12 @@ const UserProfile = () => {
     setFullName(chatUser.fullName || '');
     setUsername(chatUser.username || '');
     setGender(chatUser.gender || 'male');
-    setPreviewProfilePic(chatUser.profile || '');
+    // Fixed: Use profilePic and add base URL
+    setPreviewProfilePic(
+      chatUser.profilePic 
+        ? `http://localhost:5000${chatUser.profilePic}` 
+        : '/default-profile.png'
+    );
   }, []);
 
   const handleSaveProfile = async () => {
@@ -58,8 +68,12 @@ const UserProfile = () => {
       // Save the updated user data (including new profile image URL) to localStorage
       localStorage.setItem('chat-user', JSON.stringify(res.data));
       setIsEditing(false);
-      // Optionally update previewProfilePic immediately
-      setPreviewProfilePic(res.data.profile || '');
+      // Fixed: Update previewProfilePic with full URL
+      setPreviewProfilePic(
+        res.data.profilePic 
+          ? `http://localhost:5000${res.data.profilePic}` 
+          : '/default-profile.png'
+      );
     } catch (error) {
       setError('Failed to update profile. Please try again.');
       console.error('Failed to update profile:', error);
@@ -79,6 +93,14 @@ const UserProfile = () => {
       setProfilePic(file)
       setPreviewProfilePic(URL.createObjectURL(file))
     }
+  }
+
+  // Helper function to get profile picture URL
+  const getProfilePicUrl = () => {
+    const chatUser = getChatUser();
+    return chatUser.profilePic 
+      ? `http://localhost:5000${chatUser.profilePic}` 
+      : '/default-profile.png';
   }
 
   return (
@@ -102,15 +124,17 @@ const UserProfile = () => {
           <div className="absolute -bottom-16 left-0 w-full text-center">
             <div className="mx-auto h-32 w-32 overflow-hidden rounded-full border-4 border-white bg-white shadow-md dark:border-gray-800">
               <img
-                src={previewProfilePic}
+                src={getProfilePicUrl()}
                 alt="Profile"
                 className="h-full w-full object-cover"
+                onError={(e) => {
+                  e.target.src = '/default-profile.png'; // Fallback image
+                }}
               />
             </div>
           </div>
         )}
       </div>
-
 
       {/* Profile content */}
       <div className="flex-1 overflow-y-auto px-4 pb-8">
@@ -127,6 +151,13 @@ const UserProfile = () => {
           </div>
 
           <div className="rounded-lg bg-white p-6 shadow-md dark:bg-gray-800">
+            {/* Show error message if any */}
+            {error && (
+              <div className="mb-4 rounded-md bg-red-50 p-4 text-red-700 dark:bg-red-900/20 dark:text-red-400">
+                {error}
+              </div>
+            )}
+
             {isEditing ? (
               <div className="space-y-4">
                 <div className="text-center">
@@ -135,6 +166,9 @@ const UserProfile = () => {
                       src={previewProfilePic}
                       alt="Preview"
                       className="h-full w-full object-cover"
+                      onError={(e) => {
+                        e.target.src = '/default-profile.png';
+                      }}
                     />
                     <input
                       type="file"
