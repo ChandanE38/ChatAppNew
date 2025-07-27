@@ -26,7 +26,7 @@ const useGetMessages = () => {
             
 
             const data = await res.json(); // Parse response
-            console.log(data);
+            console.log("this is the conversation messages:",data);
 
             // If there is any error then throw that error.
             if(data.error) throw new Error(data.error);

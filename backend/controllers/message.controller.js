@@ -46,15 +46,17 @@ export const sendMessage = async (req, res,) => {
 
     //SOCKET IO Functionality will be added here;
     const receiverSocketId = getReceiverSocketId(receiverId);
+    console.log("Receiver socket ID:", receiverSocketId);
     if(receiverSocketId){
       //io.to(<socket._id>).emit() used to send events to specific client.
+      console.log("Emitting newMessage to socket:", receiverSocketId);
       io.to(receiverSocketId).emit("newMessage",newMessage);
+    } else {
+      console.log("No receiver socket found for user:", receiverId);
     }
 
-
-
-
     // Respond with success
+    console.log("Sending response:", {message: newMessage});
     res.status(201).json({message:newMessage});
 
   } catch (error) {

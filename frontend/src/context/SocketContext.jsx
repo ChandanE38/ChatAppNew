@@ -17,19 +17,24 @@ export const SocketContextProvider = ({ children }) => {
 	useEffect(() => {
 		let socketInstance;
 
-		if (authUser) {
-			socketInstance = io("http://localhost:5000/", {
-				path: "/socket.io",
+		console.log("🔍 AuthContext - authUser:", authUser);
+		console.log("🔍 AuthContext - authUser._id:", authUser?._id);
+
+		if (authUser && authUser._id) {
+			console.log("🚀 Creating socket connection for user:", authUser._id);
+			
+			socketInstance = io("http://localhost:5000", {
 				query: {
 					userId: authUser._id,
 				},
-				transports: ["websocket"], // Use websocket only
+				transports: ["websocket", "polling"], // Allow both websocket and polling
 				withCredentials: true, // For cookie/session support if needed
 			});
 
 			// ✅ Optional debug logs
 			socketInstance.on("connect", () => {
 				console.log("✅ Connected to socket server:", socketInstance.id);
+				console.log("👤 User ID for socket:", authUser._id);
 			});
 
 			socketInstance.on("connect_error", (err) => {
@@ -43,6 +48,11 @@ export const SocketContextProvider = ({ children }) => {
 			socketInstance.on("getOnlineUsers", (users) => {
 				setOnlineUsers(users);
 				console.log("🟢 Online users:", users);
+			});
+
+			// Add listener for newMessage to test if socket is working
+			socketInstance.on("newMessage", (message) => {
+				console.log("🎯 Socket received newMessage:", message);
 			});
 
 			setSocket(socketInstance);

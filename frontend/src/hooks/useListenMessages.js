@@ -40,14 +40,23 @@ const useListenMessages = () => {
   const { messages, setMessages } = useConversation();
 
   useEffect(() => {
+    console.log("Setting up socket listener for newMessage");
+    
     socket?.on("newMessage", (newMessage) => {
+      console.log("Received newMessage via socket:", newMessage);
+      
       newMessage.shouldShake = true;
 
       const sound = new Audio(notificationSound);
       sound.play();
 
       // Only add the message content
-      setMessages((prevMessages) => [...prevMessages, newMessage.message]); // Only store message content
+      setMessages((prevMessages) => {
+        console.log("Previous messages:", prevMessages);
+        const updatedMessages = [...prevMessages, newMessage];
+        console.log("Updated messages:", updatedMessages);
+        return updatedMessages;
+      });
     });
 
     return () => socket.off("newMessage");

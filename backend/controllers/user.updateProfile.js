@@ -4,32 +4,17 @@ import User from "../models/user.model.js";
 export const updateProfile = async (req, res) => {
     try {
         const userId = req.user._id;
-        const { fullName, username, gender } = req.body;
-
-        // Validate required fields
-        if (!fullName || !username || !gender) {
-            return res.status(400).json({ error: "Full name, username, and gender are required" });
-        }
-
-        if (gender !== "male" && gender !== "female") {
-            return res.status(400).json({ error: "Gender must be either 'male' or 'female'" });
-        }
-
-        const existingUser = await User.findOne({ username, _id: { $ne: userId } });
-        if (existingUser) {
-            return res.status(400).json({ error: "Username is already taken" });
-        }
+        const { name, about } = req.body;
 
         // Prepare update object
         const updateData = {
-            fullName,
-            username,
-            gender
+            name,
+            about
         };
 
         // If a file was uploaded, include the path
         if (req.file) {
-            updateData.profilePic = `/uploads/profile_pics/${req.file.filename}`;
+            updateData.avatar = `/uploads/profile_pics/${req.file.filename}`;
         }
 
         const updatedUser = await User.findByIdAndUpdate(

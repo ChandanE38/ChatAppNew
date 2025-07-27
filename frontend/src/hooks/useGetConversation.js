@@ -22,7 +22,7 @@ const useGetConversations = () => {
                     },
                 });
 
-                console.log("Response:", res);
+            
 
                 const data = await res.json();
                 if (data.error) {

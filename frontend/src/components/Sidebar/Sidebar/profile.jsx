@@ -4,6 +4,7 @@ import { FiArrowLeft, FiUser, FiMail, FiInfo, FiSun, FiMoon } from 'react-icons/
 import { motion } from 'framer-motion'
 import { useAuth } from '../../../hooks/useAuth.jsx'
 import { useTheme } from '../../../hooks/useTheme.jsx'
+import { toast } from 'react-hot-toast'
 
 const UserProfile = () => {
   const { user, updateProfile, logout } = useAuth()
@@ -24,23 +25,35 @@ const UserProfile = () => {
     setError(null)
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // Prepare the data to update
-      const updatedData = {
-        name,
-        about,
-      }
-
+      const formData = new FormData()
+      formData.append('name', name)
+      formData.append('about', about)
       if (avatarFile) {
-        updatedData.avatarFile = avatarFile
+        formData.append('avatar', avatarFile)
       }
 
-      await updateProfile(updatedData)
+      const response = await fetch('http://localhost:5000/api/users/update', {
+        method: 'PUT',
+        body: formData,
+        credentials: 'include',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to update profile')
+      }
+
+      const updatedUser = await response.json()
+      await updateProfile(updatedUser)
       setIsEditing(false)
+      toast.success('Profile updated successfully!')
     } catch (error) {
-      setError('Failed to update profile. Please try again.')
+      setError(error.message || 'Failed to update profile. Please try again.')
       console.error('Failed to update profile:', error)
+      toast.error(error.message || 'Failed to update profile')
     } finally {
       setIsSaving(false)
     }

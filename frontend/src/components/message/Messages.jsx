@@ -8,10 +8,16 @@ const Messages = () => {
   const { messages, loading } = useGetMessages();
   useListenMessages();  // Ensure this hook listens for new messages
 
+  // Debug: Log all messages to inspect their structure
+  console.log('Messages array:', messages);
+  console.log('Messages count:', messages.length);
+  console.log('Loading state:', loading);
+ 
+
   const lastMessageRef = useRef();
 
   useEffect(() => {
-    console.log('Messages updated:', messages);
+    
 
     // Safe scroll into view after messages update
     setTimeout(() => {
@@ -32,6 +38,12 @@ const Messages = () => {
           {messages.length > 0 ? (
             messages.map((message, idx) => {
               const isLastMessage = idx === messages.length - 1;
+              // Defensive: Only render if senderId exists
+              if (!message.senderId) {
+                console.warn("Message missing senderId:", message);
+                 console.warn("Message missing senderId new:", message.senderId);
+                return null;
+              }
               return (
                 <div
                   key={message._id || `message-${idx}`} // Fallback key
