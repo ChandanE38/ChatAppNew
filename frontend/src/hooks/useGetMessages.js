@@ -26,17 +26,21 @@ const useGetMessages = () => {
             
 
             const data = await res.json(); // Parse response
-            console.log("this is the conversation messages:",data);
-
             // If there is any error then throw that error.
             if(data.error) throw new Error(data.error);
 
+            // Ensure data is an array
+            const messageArray = Array.isArray(data) ? data : [];
+
             //Otherwise
-            setMessages(data);
+            setMessages(messageArray);
                     // Store only the message content
             // setMessages(data.map(msg => msg.message)); // Only store message content
         }catch(error){
+            console.error("Error fetching messages:", error);
             toast.error(error.message);
+            // Set empty array on error
+            setMessages([]);
         }finally{
             setLoading(false);
         }

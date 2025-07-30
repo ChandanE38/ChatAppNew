@@ -9,8 +9,6 @@ const Message = ({ message }) => {
 
   const fromMe = message.senderId === authUser._id;
 
-  console.log(message.senderId, authUser._id, fromMe);
-  
   const formattedTime = extractTime(message.createdAt);
   const chatClassName = fromMe ? "chat-end" : "chat-start";
 

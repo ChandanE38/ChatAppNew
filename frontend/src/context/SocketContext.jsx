@@ -17,11 +17,7 @@ export const SocketContextProvider = ({ children }) => {
 	useEffect(() => {
 		let socketInstance;
 
-		console.log("🔍 AuthContext - authUser:", authUser);
-		console.log("🔍 AuthContext - authUser._id:", authUser?._id);
-
 		if (authUser && authUser._id) {
-			console.log("🚀 Creating socket connection for user:", authUser._id);
 			
 			socketInstance = io("http://localhost:5000", {
 				query: {
@@ -39,10 +35,11 @@ export const SocketContextProvider = ({ children }) => {
 
 			socketInstance.on("connect_error", (err) => {
 				console.error("❌ Socket connection error:", err.message);
+				console.error("❌ Socket connection error details:", err);
 			});
 
-			socketInstance.on("disconnect", () => {
-				console.log("🔌 Socket disconnected");
+			socketInstance.on("disconnect", (reason) => {
+				console.log("🔌 Socket disconnected, reason:", reason);
 			});
 
 			socketInstance.on("getOnlineUsers", (users) => {
@@ -56,6 +53,9 @@ export const SocketContextProvider = ({ children }) => {
 			});
 
 			setSocket(socketInstance);
+		} else {
+			console.log("❌ Cannot create socket: authUser or authUser._id is missing");
+			console.log("❌ authUser:", authUser);
 		}
 
 		// Cleanup on unmount or authUser change

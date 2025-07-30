@@ -9,16 +9,9 @@ const Messages = () => {
   useListenMessages();  // Ensure this hook listens for new messages
 
   // Debug: Log all messages to inspect their structure
-  console.log('Messages array:', messages);
-  console.log('Messages count:', messages.length);
-  console.log('Loading state:', loading);
- 
-
   const lastMessageRef = useRef();
 
   useEffect(() => {
-    
-
     // Safe scroll into view after messages update
     setTimeout(() => {
       if (lastMessageRef.current) {
@@ -26,6 +19,9 @@ const Messages = () => {
       }
     }, 100);
   }, [messages]);  // Re-run when messages change
+
+  // Ensure messages is always an array
+  const safeMessages = Array.isArray(messages) ? messages : [];
 
   return (
     <div className='px-4 flex-1 overflow-auto'>
@@ -35,13 +31,12 @@ const Messages = () => {
       ) : (
         <>
           {/* Show message list */}
-          {messages.length > 0 ? (
-            messages.map((message, idx) => {
-              const isLastMessage = idx === messages.length - 1;
+          {safeMessages.length > 0 ? (
+            safeMessages.map((message, idx) => {
+              const isLastMessage = idx === safeMessages.length - 1;
               // Defensive: Only render if senderId exists
               if (!message.senderId) {
                 console.warn("Message missing senderId:", message);
-                 console.warn("Message missing senderId new:", message.senderId);
                 return null;
               }
               return (

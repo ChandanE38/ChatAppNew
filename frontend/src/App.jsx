@@ -12,8 +12,6 @@ import UserProfile from './components/Sidebar/Sidebar/profile.jsx';
 function App() {
     const { authUser } = useAuthContext();
 
-    console.log("authUser is present:", authUser);  // Log the authUser state for debugging
-
     // Optional: Handle loading state during initial auth check
     if (authUser === undefined) {
         return <div>Loading...</div>;  // Show loading while authUser is being fetched

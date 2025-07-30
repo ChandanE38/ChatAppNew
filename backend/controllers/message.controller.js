@@ -50,6 +50,7 @@ export const sendMessage = async (req, res,) => {
     if(receiverSocketId){
       //io.to(<socket._id>).emit() used to send events to specific client.
       console.log("Emitting newMessage to socket:", receiverSocketId);
+      
       io.to(receiverSocketId).emit("newMessage",newMessage);
     } else {
       console.log("No receiver socket found for user:", receiverId);
