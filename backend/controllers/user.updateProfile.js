@@ -4,17 +4,18 @@ import User from "../models/user.model.js";
 export const updateProfile = async (req, res) => {
     try {
         const userId = req.user._id;
-        const { name, about } = req.body;
+        const { fullName, username, gender } = req.body;
 
         // Prepare update object
         const updateData = {
-            name,
-            about
+            fullName,
+            username,
+            gender
         };
 
         // If a file was uploaded, include the path
         if (req.file) {
-            updateData.avatar = `/uploads/profile_pics/${req.file.filename}`;
+            updateData.profilePic = `/uploads/profile_pics/${req.file.filename}`;
         }
 
         const updatedUser = await User.findByIdAndUpdate(

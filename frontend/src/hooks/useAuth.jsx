@@ -180,10 +180,11 @@ const useAuthStore = create(
           formData.append('fullName', fullName)
           formData.append('username', username)
           formData.append('gender', gender)
-          if (profilePic) formData.append('profilePic', profilePic)
+          if (profilePic) formData.append('profile', profilePic)
 
-          const res = await axios.put('localhost:5000/api/users/update', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
+          const res = await axios.put('http://localhost:5000/api/users/update', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+            withCredentials: true
           })
 
           set({ user: res.data }) // update user in store

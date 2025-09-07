@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import path from "path";
 
 import cookieParser from "cookie-parser";
 
@@ -22,15 +23,15 @@ app.use(express.json()); //to parse/extract the incoming request with JSON paylo
 
 app.use(cookieParser());
 
-// Allow all origins by using the default CORS configuration
-app.use(cors()); // This allows access from any origin
+// Serve static files for uploaded images
+app.use('/uploads', express.static('uploads'));
 
-
-// Enable CORS for all origins (for development purposes)
+// Configure CORS to allow credentials and specific origin
 app.use(cors({
-  origin: "*",  // Allow all origins (not recommended for production)
-  methods: ["GET", "POST", "PUT", "DELETE"],  // Allowed methods
-  allowedHeaders: ["Content-Type", "Authorization"]  // Allowed headers
+  origin: "http://localhost:8000", // Frontend URL
+  credentials: true, // Allow cookies and credentials
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 //Middle layer

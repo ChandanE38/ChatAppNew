@@ -18,6 +18,7 @@ export const SocketContextProvider = ({ children }) => {
 		let socketInstance;
 
 		if (authUser && authUser._id) {
+			console.log("🔌 Initializing socket connection for user:", authUser._id);
 			
 			socketInstance = io("http://localhost:5000", {
 				query: {
@@ -54,8 +55,13 @@ export const SocketContextProvider = ({ children }) => {
 
 			setSocket(socketInstance);
 		} else {
-			console.log("❌ Cannot create socket: authUser or authUser._id is missing");
-			console.log("❌ authUser:", authUser);
+			if (authUser === null) {
+				console.log("🚫 User not authenticated, skipping socket connection");
+			} else if (authUser && !authUser._id) {
+				console.error("❌ AuthUser missing _id field:", authUser);
+			} else {
+				console.log("⏳ Waiting for user authentication...");
+			}
 		}
 
 		// Cleanup on unmount or authUser change

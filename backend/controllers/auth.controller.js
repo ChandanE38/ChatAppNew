@@ -59,6 +59,7 @@ export const LogInUser = async (req, res) => {
             fullName: user.fullName,
             username: user.username,
             profilePic: user.profilePic,
+            gender: user.gender,
             token,  // Including the token in response
         });
 
@@ -117,8 +118,8 @@ export const SignInUser = async (req, res) => {
         }
 
         // Validate gender input
-        if (!["male", "female"].includes(gender)) {
-            return res.status(400).json({ error: "Invalid gender. Choose 'male' or 'female'." });
+        if (!["male", "female", "other"].includes(gender)) {
+            return res.status(400).json({ error: "Invalid gender. Choose 'male', 'female', or 'other'." });
         }
 
         // Check if username already exists
@@ -150,7 +151,7 @@ export const SignInUser = async (req, res) => {
         await newUser.save();
 
         //Generate token so- that we can set the cookies.
-        const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ userId: newUser._id }, process.env.JWT_SECRET, {
             expiresIn: "7d",
         });
 
@@ -160,10 +161,12 @@ export const SignInUser = async (req, res) => {
 
         // Send success response
         res.status(201).json({
-            id: newUser._id,
+            _id: newUser._id,
             fullName: newUser.fullName,
             username: newUser.username,
             profilePic: newUser.profilePic,
+            gender: newUser.gender,
+            token: token,
             message: "Signup successful!",
         });
     } catch (error) {

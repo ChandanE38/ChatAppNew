@@ -37,7 +37,8 @@ const useLogin = () => {
         _id: data._id,
         fullName: data.fullName,
         username: data.username,
-        profilePic: data.profilePic
+        profilePic: data.profilePic,
+        gender: data.gender
       };
 
       console.log("👤 User data to store:", userData);

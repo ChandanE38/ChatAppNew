@@ -10,6 +10,6 @@ const router = express.Router();
 router.get("/", protectRoute, getUsersForSidebar);
 
 // New route to update user profile with image upload support
-router.put("/update", protectRoute, upload.single("profilePic"), updateProfile);
+router.put("/update", protectRoute, upload.single("profile"), updateProfile);
 
 export default router;

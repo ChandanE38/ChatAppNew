@@ -31,11 +31,27 @@ const useSignup = () => {
                 throw new Error(data.error || "Signup failed");
             }
 
-            // Store user in localStorage
-            localStorage.setItem("chat-user", JSON.stringify(data));
+            console.log("✅ Signup successful, user data:", data);
+
+            // Store token separately in localStorage
+            if (data.token) {
+                localStorage.setItem("token", data.token);
+            }
+
+            // Extract user data (without token) for storage
+            const userData = {
+                _id: data._id,
+                fullName: data.fullName,
+                username: data.username,
+                profilePic: data.profilePic,
+                gender: data.gender
+            };
+
+            // Store user info in localStorage
+            localStorage.setItem("chat-user", JSON.stringify(userData));
 
             // Update auth context
-            setAuthUser(data);
+            setAuthUser(userData);
 
             // Success message
             toast.success("Signup successful!");
