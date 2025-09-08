@@ -14,9 +14,7 @@ const Message = ({ message }) => {
 
   const defaultPic = "/default-avatar.png"; // Update with your actual fallback image path
   
-  const profilePic = fromMe
-    ? authUser.profilePic || defaultPic
-    : selectedConversation?.profilePic || defaultPic;
+  const profilePic = fromMe ? authUser.profilePic : selectedConversation?.profilePic;
 
   // Safely extract message content
   const messageContent =

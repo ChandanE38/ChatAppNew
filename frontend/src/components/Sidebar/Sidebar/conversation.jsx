@@ -71,7 +71,13 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
         className={`flex gap-2 items-center p-2 py-1 rounded cursor-pointer 
           hover:bg-sky-500 transition-all duration-200 ease-in-out 
           ${isSelected ? "bg-sky-500" : ""}`}
-        onClick={() => setSelectedConversation(conversation)}
+        // onClick={() => setSelectedConversation(conversation)}
+          onClick={() =>
+            setSelectedConversation({
+                 ...conversation,
+                 profilePic, // pass the resolved profile pic
+            })
+     }
       >
         {/* User Avatar */}
         <div className={`avatar ${isOnline ? "online" : ""}`}>
