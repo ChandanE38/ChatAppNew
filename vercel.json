@@ -3,7 +3,11 @@
   "builds": [
     {
       "src": "backend/server.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 10,
+        "memory": 1024
+      }
     },
     {
       "src": "frontend/package.json",
@@ -27,5 +31,26 @@
   ],
   "env": {
     "NODE_ENV": "production"
+  },
+  "functions": {
+    "backend/server.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "experimental": {
+    "optimizeFunctionDeployment": true,
+    "coldStart": {
+      "prevention": true
+    }
+  },
+  "protection": {
+    "standard": true,
+    "headers": {
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.vercel.app;"
+    }
   }
 }
