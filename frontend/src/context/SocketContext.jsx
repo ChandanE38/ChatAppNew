@@ -20,7 +20,14 @@ export const SocketContextProvider = ({ children }) => {
 		if (authUser && authUser._id) {
 			console.log("🔌 Initializing socket connection for user:", authUser._id);
 			
-			socketInstance = io("http://localhost:5000", {
+			// Determine the backend URL based on environment
+			const backendUrl = process.env.NODE_ENV === 'production'
+				? window.location.origin // In production, use the same origin
+				: 'http://localhost:5000'; // In development, use localhost
+			
+			console.log('🔌 Connecting to socket server at:', backendUrl);
+			
+			socketInstance = io(backendUrl, {
 				query: {
 					userId: authUser._id,
 				},

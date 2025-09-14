@@ -26,9 +26,29 @@ app.use(cookieParser());
 // Serve static files for uploaded images
 app.use('/uploads', express.static('uploads'));
 
-// Configure CORS to allow credentials and specific origin
+// Configure CORS to allow credentials and specific origins
 app.use(cors({
-  origin: "http://localhost:8000", // Frontend URL
+  origin: function(origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl requests)
+    const allowedOrigins = [
+      "http://localhost:8000",
+      "https://chat-app-new.vercel.app",
+      /\.vercel\.app$/  // Allow all vercel.app subdomains
+    ];
+    
+    if (!origin || allowedOrigins.some(allowedOrigin => {
+      if (typeof allowedOrigin === 'string') {
+        return allowedOrigin === origin;
+      } else if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin);
+      }
+      return false;
+    })) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true, // Allow cookies and credentials
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]

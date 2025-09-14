@@ -20,7 +20,11 @@ const UserProfile = () => {
   const [previewAvatar, setPreviewAvatar] = useState(() => {
     const profileImg = user?.profilePic || ''
     if (profileImg && !profileImg.startsWith('http')) {
-      return `http://localhost:5000${profileImg}`
+      // Use window.location.origin in production, localhost in development
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? window.location.origin 
+        : 'http://localhost:5000'
+      return `${baseUrl}${profileImg}`
     }
     return profileImg
   })
@@ -30,7 +34,11 @@ const UserProfile = () => {
   useEffect(() => {
     const profileImg = user?.profilePic || ''
     if (profileImg && !profileImg.startsWith('http')) {
-      setPreviewAvatar(`http://localhost:5000${profileImg}`)
+      // Use window.location.origin in production, localhost in development
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? window.location.origin 
+        : 'http://localhost:5000'
+      setPreviewAvatar(`${baseUrl}${profileImg}`)
     } else {
       setPreviewAvatar(profileImg)
     }
@@ -94,7 +102,11 @@ const UserProfile = () => {
       
       // Update preview avatar with the new profile image URL
       if (updatedUser.profilePic) {
-        setPreviewAvatar(`http://localhost:5000${updatedUser.profilePic}`)
+        // Use window.location.origin in production, localhost in development
+        const baseUrl = process.env.NODE_ENV === 'production' 
+          ? window.location.origin 
+          : 'http://localhost:5000'
+        setPreviewAvatar(`${baseUrl}${updatedUser.profilePic}`)
       }
       
       // Update localStorage and auth context
