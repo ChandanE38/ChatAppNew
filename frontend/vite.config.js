@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: '/', // Ensure base path is set correctly for production
 
   // // change the port number by this way accordingly
   server:{
@@ -14,5 +15,10 @@ export default defineConfig({
   //       changeOrigin:true,
   //     },
   //   },
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    emptyOutDir: true,
   },
 })
