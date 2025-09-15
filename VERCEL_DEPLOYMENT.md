@@ -16,16 +16,9 @@ These settings provide a balance between performance and cost efficiency for the
 
 ### Cold Start Prevention
 
-Cold start prevention has been enabled to improve the responsiveness of the application, especially after periods of inactivity. This ensures that users experience minimal latency when accessing the application.
+Cold start prevention is recommended to improve the responsiveness of the application, especially after periods of inactivity. This ensures that users experience minimal latency when accessing the application.
 
-```json
-"experimental": {
-  "optimizeFunctionDeployment": true,
-  "coldStart": {
-    "prevention": true
-  }
-}
-```
+> **Note**: Previously, we used the `experimental` property for cold start prevention, but this is no longer supported by Vercel. Please refer to Vercel's official documentation for current methods to optimize cold starts.
 
 ### Deployment Protection
 

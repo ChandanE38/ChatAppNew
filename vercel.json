@@ -32,12 +32,6 @@
   "env": {
     "NODE_ENV": "production"
   },
-  "experimental": {
-    "optimizeFunctionDeployment": true,
-    "coldStart": {
-      "prevention": true
-    }
-  },
   "protection": {
     "standard": true,
     "headers": {

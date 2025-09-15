@@ -46,6 +46,10 @@
 ]
 ```
 
+### Error: Invalid request: should NOT have additional property `experimental`
+
+**Solution**: Remove the `experimental` property from vercel.json. Vercel does not allow using the `experimental` property in the configuration. If you need features like optimized function deployment or cold start prevention, check Vercel's documentation for officially supported configuration options.
+
 ### Error: Build Failed
 
 **Possible Solutions**:
