@@ -50,6 +50,10 @@
 
 **Solution**: Remove the `experimental` property from vercel.json. Vercel does not allow using the `experimental` property in the configuration. If you need features like optimized function deployment or cold start prevention, check Vercel's documentation for officially supported configuration options.
 
+### Error: Invalid request: should NOT have additional property `protection`
+
+**Solution**: Remove the `protection` property from vercel.json. Vercel does not allow using the `protection` property in the configuration. If you need to implement security headers, check Vercel's documentation for officially supported methods to add security headers to your deployment.
+
 ### Error: Build Failed
 
 **Possible Solutions**:

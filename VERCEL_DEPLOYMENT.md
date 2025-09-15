@@ -22,24 +22,15 @@ Cold start prevention is recommended to improve the responsiveness of the applic
 
 ### Deployment Protection
 
-Standard protection has been enabled with the following security headers:
+Security headers are recommended for protecting your application from various attacks:
 
 - **X-Frame-Options**: DENY (Prevents clickjacking attacks)
 - **X-Content-Type-Options**: nosniff (Prevents MIME type sniffing)
 - **Referrer-Policy**: strict-origin-when-cross-origin (Controls referrer information)
 - **Content-Security-Policy**: Restricts resources that can be loaded
 
-```json
-"protection": {
-  "standard": true,
-  "headers": {
-    "X-Frame-Options": "DENY",
-    "X-Content-Type-Options": "nosniff",
-    "Referrer-Policy": "strict-origin-when-cross-origin",
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.vercel.app;"
-  }
-}
-```
+> **Note**: Previously, we used the `protection` property to configure security headers, but this is no longer supported by Vercel. Please refer to Vercel's official documentation for current methods to implement security headers.
+
 
 ## Build Configuration
 
