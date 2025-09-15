@@ -12,6 +12,8 @@ The deployment configuration for this MERN stack application has been optimized 
 
 These settings provide a balance between performance and cost efficiency for the backend server.
 
+> **Important Note**: Function settings are configured within the `builds` section rather than using a separate `functions` property. Vercel does not allow using both `builds` and `functions` properties together in the same configuration.
+
 ### Cold Start Prevention
 
 Cold start prevention has been enabled to improve the responsiveness of the application, especially after periods of inactivity. This ensures that users experience minimal latency when accessing the application.
