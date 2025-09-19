@@ -3,55 +3,30 @@ import useConversation from "../zustand/useConversation";
 import toast from "react-hot-toast";
 
 const useGetMessages = () => {
-  const [loading , setLoading]= useState(false);
-  const {messages,setMessages,selectedConversation}=useConversation();
+	const [loading, setLoading] = useState(false);
+	const { messages, setMessages, selectedConversation } = useConversation();
 
-  useEffect(()=>{
-    const getMessages = async () => {
-        setLoading(true);
+	useEffect(() => {
+		const getMessages = async () => {
+			if (!selectedConversation || !selectedConversation._id) return;
+			setLoading(true);
+			try {
+				const res = await fetch(`/api/message/${selectedConversation._id}`,{
+					
+				});
+				const data = await res.json();
+				if (data.error) throw new Error(data.error);
+				setMessages(data);
+			} catch (error) {
+				toast.error(error.message);
+			} finally {
+				setLoading(false);
+			}
+		};
 
-        try{
-            const token = localStorage.getItem("token"); // Get token (modify based on your auth system)
-            if (!token) throw new Error("No authentication token found");
+		if (selectedConversation?._id) getMessages();
+	}, [selectedConversation?._id, setMessages]);
 
-            //this is get method then we dont need to add any options of method.
-            const res = await fetch(`http://localhost:5000/api/message/${selectedConversation._id}`,{
-                method:"GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`, // Attach token
-                  },
-                }
-            );
-            
-
-            const data = await res.json(); // Parse response
-            // If there is any error then throw that error.
-            if(data.error) throw new Error(data.error);
-
-            // Ensure data is an array
-            const messageArray = Array.isArray(data) ? data : [];
-
-            //Otherwise
-            setMessages(messageArray);
-                    // Store only the message content
-            // setMessages(data.map(msg => msg.message)); // Only store message content
-        }catch(error){
-            console.error("Error fetching messages:", error);
-            toast.error(error.message);
-            // Set empty array on error
-            setMessages([]);
-        }finally{
-            setLoading(false);
-        }
-    }
-
-    //Call this getMessages function.If there is a any selected conversation.
-    if(selectedConversation?._id) getMessages();
-
-  },[selectedConversation._id,setMessages]) //@@@@@ what is the use of this?
-
-  return {messages,loading};
-}
-
+	return { messages, loading };
+};
 export default useGetMessages;
