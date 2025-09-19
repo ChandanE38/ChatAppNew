@@ -6,16 +6,6 @@ export default defineConfig({
   plugins: [react()],
   base: '/', // Ensure base path is set correctly for production
 
-  // // change the port number by this way accordingly
-  server:{
-     port:8000,
-    proxy:{
-      "/api":{
-        target:"http://localhost:5000",
-        changeOrigin:true,
-      },
-    },
-  },
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
