@@ -61,9 +61,14 @@ app.use("/api/users",userRoutes);
 
 
 
-server.listen(PORT, ()=>{
-    connectToMongoDB();
-    console.log(`Server Running on port ${PORT}`);
-
-});
-
+// Await DB connection before starting the server
+(async () => {
+    try {
+        await connectToMongoDB();
+        server.listen(PORT, () => {
+            console.log(`Server Running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("Failed to connect to MongoDB, server not started.", error);
+    }
+})();

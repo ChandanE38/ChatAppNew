@@ -9,12 +9,12 @@ export default defineConfig({
   // // change the port number by this way accordingly
   server:{
      port:8000,
-  //   proxy:{
-  //     "/api":{
-  //       target:"http://localhost:5000",
-  //       changeOrigin:true,
-  //     },
-  //   },
+    proxy:{
+      "/api":{
+        target:"http://localhost:5000",
+        changeOrigin:true,
+      },
+    },
   },
   build: {
     outDir: 'dist',
