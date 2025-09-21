@@ -19,12 +19,8 @@
       "destination": "/backend/server.js"
     },
     {
-      "source": "/uploads/(.*)",
-      "destination": "/backend/server.js"
-    },
-    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/frontend/dist/index.html"
     }
   ]
 }

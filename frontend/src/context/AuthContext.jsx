@@ -1,21 +1,29 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react';
 
 export const AuthContext = createContext();
 
-//created new hook
-// const context = useContext(AuthContext);
 export const useAuthContext = () => {
     return useContext(AuthContext);
 };
 
+export const AuthContextProvider = ({ children }) => {
+    // Initialize with undefined to handle loading state correctly in App.jsx
+    const [authUser, setAuthUser] = useState(undefined);
 
+    useEffect(() => {
+        try {
+            const userJson = localStorage.getItem("chat-user");
+            const user = userJson ? JSON.parse(userJson) : null;
+            setAuthUser(user);
+        } catch (error) {
+            console.error("Failed to parse user from localStorage", error);
+            setAuthUser(null);
+        }
+    }, []);
 
-export const AuthContextProvider = ({children}) => {
-
-    const [authUser , setAuthUser ] =useState(JSON.parse(localStorage.getItem("chat-user")) || null)
-
-    //we rap inside authcontext provider so that our entire app use this "value" which assign to that
-    return <AuthContext.Provider value={{authUser,setAuthUser}}>
-        {children}
-    </AuthContext.Provider>
-}
+    return (
+        <AuthContext.Provider value={{ authUser, setAuthUser }}>
+            {children}
+        </AuthContext.Provider>
+    );
+};
